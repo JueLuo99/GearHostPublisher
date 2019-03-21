@@ -1,6 +1,8 @@
 import ftplib
 import os
 
+
+
 with open(os.path.split(os.path.abspath(__file__))[0]+"./account","r") as f:
     username = f.readline().strip()
     password = f.readline().strip()
@@ -17,7 +19,8 @@ def traverseFile(rootpath):
         # 如果碰到以“.”开头的隐藏文件夹则跳过
         if l.startswith("."):
             continue
-        # print(path)
+        if (l == "account" or l==os.path.basename(__file__)):
+            continue
         if os.path.isdir(path):
             traverseFile(path)
         else:
