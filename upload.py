@@ -19,37 +19,59 @@ def traverseFile(rootpath):
         # 如果碰到以“.”开头的隐藏文件夹则跳过
         if l.startswith("."):
             continue
+        # 跳过配置文件和自身的上传
         if (l == "account" or l==os.path.basename(__file__)):
             continue
+        readyToUploadList.append(path)
         if os.path.isdir(path):
             traverseFile(path)
-        else:
-            readyToUploadList.append(path)
+# print(os.path.basename(__file__))
 traverseFile(localroot)
 
+# def mkdirs(p):
+#     p = os.path.split(p)[0]
+#     if (p!=""):
+#         mkdirs(p)
+#         try:
+#             ftp.mkd(p)
+#         except Exception as identifier:
+#             pass
+        
 
-print(os.path.basename(__file__))
+
+
 # 初始化 FTP 连接并登录
 ftp = ftplib.FTP(host=r'ftp.gear.host')
 ftp.set_debuglevel(ftplibDebugLevel)
 ftp.login(user=username,passwd=password)
 ftp.cwd(remoteroot)
+
+print(readyToUploadList)
+
 # 遍历 readyToUploadList 上传文件
 for f in readyToUploadList:
+    print("++++++++++++++++++++++NOW f is "+f)
     localFile = f
     remoteFile = remoteroot + os.path.sep + os.path.split(f)[1]
     localRelativePath = os.path.relpath(f,start = os.path.split(os.path.abspath(__file__))[0])
     remotePath = os.path.split(remoteroot + os.path.sep +localRelativePath)[0]
+    if os.path.isdir(f):
+        try:
+            ftp.mkd(remoteroot+localRelativePath)
+        except Exception as identifier:
+            pass
+        ftp.cwd(remoteroot+localRelativePath)
+        continue
+        
     # print("remoteFile:" + remoteFile)
     # print(remotePath)
     ff = open(f,"rb")
-    print(remotePath)
+    # print("++++++++++++++++++"+remotePath)
     try:
-        ftp.mkd(remotePath)
         ftp.cwd(remotePath)
     except Exception as identifier:
         pass
-    ftp.storbinary("STOR "+localRelativePath,ff,1024)
+    ftp.storbinary("STOR "+os.path.split(f)[1],ff,1024)
     
     
 
