@@ -39,12 +39,19 @@ for f in readyToUploadList:
     localFile = f
     remoteFile = remoteroot + os.path.sep + os.path.split(f)[1]
     localRelativePath = os.path.relpath(f,start = os.path.split(os.path.abspath(__file__))[0])
-    remotePath = remoteroot + localRelativePath
+    remotePath = os.path.split(remoteroot + os.path.sep +localRelativePath)[0]
     # print("remoteFile:" + remoteFile)
     # print(remotePath)
     ff = open(f,"rb")
-    print(ftp.pwd())
+    print(remotePath)
+    try:
+        ftp.mkd(remotePath)
+        ftp.cwd(remotePath)
+    except Exception as identifier:
+        pass
     ftp.storbinary("STOR "+localRelativePath,ff,1024)
+    
+    
 
     # f = open(os.path.split(os.path.abspath(__file__))[0]+"\\"+"test","rb")
     # # fsize = os.path.getsize(f)
