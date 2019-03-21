@@ -1,8 +1,9 @@
 import ftplib
 import os
 
-username = r'username'
-password = r'password'
+with open(os.path.split(os.path.abspath(__file__))[0]+"./account","r") as f:
+    username = f.readline().strip()
+    password = f.readline().strip()
 
 ftplibDebugLevel = 1
 remoteroot = "/site/wwwroot"
