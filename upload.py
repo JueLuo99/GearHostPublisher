@@ -58,3 +58,5 @@ for f in readyToUploadList:
     ftp.storbinary("STOR "+os.path.split(f)[1],ff,1024)
 
 ftp.quit()
+
+os.system("pause")
